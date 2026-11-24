@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Telegram Bots Directory</title>
+  <title>TELEGRAM DIRECTORY</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -23,13 +23,33 @@
     input {
       width: 100%;
       padding: 10px 12px;
-      margin-bottom: 24px;
+      margin-bottom: 14px;
       border-radius: 6px;
       border: 1px solid #343a40;
       background: #1b1f23;
       color: #f2f4f7;
       font-size: 15px;
       box-sizing: border-box;
+    }
+    .categories-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .category-chip {
+      background: #1b1f23;
+      border: 1px solid #343a40;
+      color: #f2f4f7;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .category-chip:hover,
+    .category-chip.active {
+      border-color: #58a6ff;
+      background: #222a35;
     }
     h2 {
       border-bottom: 1px solid #2b3036;
@@ -56,13 +76,15 @@
     .status {
       color: #9aa4b2;
       font-size: 14px;
+      margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Telegram Bots Directory</h1>
+    <h1>TELEGRAM DIRECTORY</h1>
     <input id="search" type="search" placeholder="Filter by bot name or category..." />
+    <div id="categories" class="categories-bar" aria-label="Categories"></div>
     <div id="status" class="status">Loading links...</div>
     <div id="directory"></div>
   </div>
@@ -70,6 +92,7 @@
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/1yJBr9fHUoAB8HAxrRzniYLL2_A4dCOXvJQbc8YBdfuA/export?format=csv&gid=1767456501";
     let allRows = [];
+    let selectedCategory = "";
 
     function parseCSV(text) {
       const rows = [];
@@ -113,24 +136,116 @@
       return rows;
     }
 
+    function renderCategories() {
+      const bar = document.getElementById("categories");
+      bar.innerHTML = "";
+
+      const counts = new Map();
+      for (const item of allRows) {
+        const cat = item.category || "Uncategorized";
+        counts.set(cat, (counts.get(cat) || 0) + 1);
+      }
+
+      const allBtn = document.createElement("button");
+      allBtn.type = "button";
+      allBtn.className = "category-chip" + (selectedCategory === "" ? " active" : "");
+      allBtn.textContent = `All (${allRows.length})`;
+      allBtn.onclick = () => {
+        selectedCategory = "";
+        render(document.getElementById("search").value);
+      };
+      bar.appendChild(allBtn);
+
+      for (const [cat, count] of counts.entries()) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "category-chip" + (selectedCategory === cat ? " active" : "");
+        btn.textContent = `${cat} (${count})`;
+        btn.onclick = () => {
+          selectedCategory = selectedCategory === cat ? "" : cat;
+          render(document.getElementById("search").value);
+        };
+        bar.appendChild(btn);
+      }
+    }
+
     function render(filterText = "") {
+      renderCategories();
       const q = filterText.trim().toLowerCase();
       const grouped = new Map();
 
       for (const item of allRows) {
+        const cat = item.category || "Uncategorized";
+        if (selectedCategory && cat !== selectedCategory) continue;
+
         const match =
           !q ||
-          item.category.toLowerCase().includes(q) ||
+          cat.toLowerCase().includes(q) ||
           item.bot_name.toLowerCase().includes(q) ||
           item.url.toLowerCase().includes(q);
         if (!match) continue;
 
-        if (!grouped.has(item.category)) grouped.set(item.category, []);
-        grouped.get(item.category).push(item);
+        if (!grouped.has(cat)) grouped.set(cat, []);
+        grouped.get(cat).push(item);
       }
 
       const container = document.getElementById("directory");
       container.innerHTML = "";
 
       if (grouped.size === 0) {
-        container.innerHTML = '<p
+        container.innerHTML = "<p>No matching Telegram entries found.</p>";
+        return;
+      }
+
+      for (const [cat, items] of grouped.entries()) {
+        const h2 = document.createElement("h2");
+        h2.textContent = `${cat} (${items.length})`;
+        container.appendChild(h2);
+
+        const ul = document.createElement("ul");
+        for (const item of items) {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = item.url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = item.bot_name || item.url;
+          li.appendChild(a);
+          ul.appendChild(li);
+        }
+        container.appendChild(ul);
+      }
+    }
+
+    async function init() {
+      const statusEl = document.getElementById("status");
+      try {
+        const res = await fetch(CSV_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const csvText = await res.text();
+        const rows = parseCSV(csvText);
+        const dataRows = rows.slice(1);
+
+        allRows = dataRows
+          .map((cols) => ({
+            category: cols[0] || "Uncategorized",
+            bot_name: cols[1] || "",
+            url: cols[2] || ""
+          }))
+          .filter((item) => item.url);
+
+        statusEl.textContent = `Loaded ${allRows.length} entries.`;
+        render();
+      } catch (err) {
+        statusEl.textContent = `Failed to load sheet: ${err.message}`;
+      }
+    }
+
+    document.getElementById("search").addEventListener("input", (e) => {
+      render(e.target.value);
+    });
+
+    init();
+  </script>
+</body>
+</html>
