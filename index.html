@@ -1,202 +1,269 @@
-<!-- https://ram133.github.io/ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Telegram Bots Directory</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 24px;
-      background: #111315;
-      color: #f2f4f7;
-    }
-    .container {
-      max-width: 820px;
-      margin: 0 auto;
-    }
-    h1 {
-      margin-bottom: 12px;
-    }
-    input {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 24px;
-      border-radius: 6px;
-      border: 1px solid #343a40;
-      background: #1b1f23;
-      color: #f2f4f7;
-      font-size: 15px;
-      box-sizing: border-box;
-    }
-    h2 {
-      border-bottom: 1px solid #2b3036;
-      padding-bottom: 6px;
-      margin-top: 28px;
-      font-size: 19px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 12px 0;
-    }
-    li {
-      margin: 8px 0;
-    }
-    a {
-      color: #58a6ff;
-      text-decoration: none;
-      word-break: break-all;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .status {
-      color: #9aa4b2;
-      font-size: 14px;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GetPay — $9 Digital Checkout</title>
+<style>
+:root {
+  --bg: #0f0f12;
+  --surface: #1a1a20;
+  --border: #2a2a34;
+  --text: #e8e6e3;
+  --muted: #9a9690;
+  --accent: #e2a23a;
+  --accent-dim: #b07d2a;
+  --radius: 12px;
+  --pad: 1rem;
+  --max: 30rem;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: var(--pad);
+}
+header {
+  text-align: center;
+  padding: 1.5rem 0 1.25rem;
+}
+header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+header p {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.15rem 1.1rem;
+  margin-bottom: 0.85rem;
+}
+.card h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+}
+.cat-group {
+  margin-bottom: 0.9rem;
+}
+.cat-group:last-child {
+  margin-bottom: 0;
+}
+.cat-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+}
+.item-row:last-child {
+  margin-bottom: 0;
+}
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.item-title {
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.item-price {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.95rem;
+}
+.summary strong {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+.btn-row {
+  display: grid;
+  gap: 0.55rem;
+}
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #111;
+  background: var(--accent);
+}
+.btn:active {
+  background: var(--accent-dim);
+}
+.btn.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.signal-box {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: none;
+}
+.signal-box.open {
+  display: block;
+}
+.signal-box code {
+  color: var(--text);
+  font-weight: 600;
+}
+footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Telegram Bots Directory</h1>
-    <input id="search" type="search" placeholder="Filter by bot name or category..." />
-    <div id="status" class="status">Loading links...</div>
-    <div id="directory"></div>
-  </div>
+<div class="wrap">
+  <header>
+    <h1>GetPay</h1>
+    <p>Digital products only • $9 per item • PayPal &amp; Signal MobileCoin</p>
+  </header>
 
-  <script>
-    const CSV_URL = "PASTE_YOUR_PUBLISHED_CSV_URL_HERE";
-    let allRows = [];
+  <section class="card">
+    <h2>Select Digital Items ($9 Each)</h2>
 
-    function parseCSV(text) {
-      const rows = [];
-      let row = [];
-      let field = "";
-      let inQuotes = false;
+    <div class="cat-group">
+      <div class="cat-label">Apps &amp; Tools</div>
+      <label class="item-row">
+        <span class="item-left">
+          <input type="checkbox" class="item-cb" data-title="Single-File PWA Bundle" value="9">
+          <span class="item-title">Single-File PWA Bundle</span>
+        </span>
+        <span class="item-price">$9</span>
+      </label>
+      <label class="item-row">
+        <span class="item-left">
+          <input type="checkbox" class="item-cb" data-title="Automation &amp; Bot Starter Kit" value="9">
+          <span class="item-title">Automation &amp; Bot Starter Kit</span>
+        </span>
+        <span class="item-price">$9</span>
+      </label>
+    </div>
 
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        const next = text[i + 1];
+    <div class="cat-group">
+      <div class="cat-label">Audio &amp; Media</div>
+      <label class="item-row">
+        <span class="item-left">
+          <input type="checkbox" class="item-cb" data-title="AI Audio &amp; Binaural Pack" value="9">
+          <span class="item-title">AI Audio &amp; Binaural Pack</span>
+        </span>
+        <span class="item-price">$9</span>
+      </label>
+      <label class="item-row">
+        <span class="item-left">
+          <input type="checkbox" class="item-cb" data-title="Creator Templates &amp; Scripts" value="9">
+          <span class="item-title">Creator Templates &amp; Scripts</span>
+        </span>
+        <span class="item-price">$9</span>
+      </label>
+    </div>
+  </section>
 
-        if (inQuotes) {
-          if (ch === '"' && next === '"') {
-            field += '"';
-            i++;
-          } else if (ch === '"') {
-            inQuotes = false;
-          } else {
-            field += ch;
-          }
-        } else if (ch === '"') {
-          inQuotes = true;
-        } else if (ch === ",") {
-          row.push(field.trim());
-          field = "";
-        } else if (ch === "\n" || ch === "\r") {
-          if (ch === "\r" && next === "\n") i++;
-          row.push(field.trim());
-          if (row.some((cell) => cell.length > 0)) rows.push(row);
-          row = [];
-          field = "";
-        } else {
-          field += ch;
-        }
-      }
+  <section class="card">
+    <h2>Unified Checkout</h2>
+    <div class="summary">
+      <span id="count-label">0 items selected</span>
+      <strong id="total-label">$0</strong>
+    </div>
+    <div class="btn-row">
+      <a id="paypal-btn" class="btn" href="https://www.paypal.com/paypalme/crh2509/9" target="_blank" rel="noopener">Pay with PayPal ($9 per item)</a>
+      <button type="button" id="signal-btn" class="btn secondary">Pay with Signal MobileCoin</button>
+    </div>
+    <div id="signal-box" class="signal-box">
+      Send equivalent MobileCoin via Signal to username <code>Iknowme.08</code> and note your selected digital item. PayPal merchant: <code>crh2509@icloud.com</code>.
+    </div>
+  </section>
 
-      if (field.length > 0 || row.length > 0) {
-        row.push(field.trim());
-        if (row.some((cell) => cell.length > 0)) rows.push(row);
-      }
-      return rows;
-    }
+  <footer>ram133.github.io/getpay • Digital Delivery Only</footer>
+</div>
 
-    function render(filterText = "") {
-      const q = filterText.trim().toLowerCase();
-      const grouped = new Map();
+<script>
+(() => {
+  const UNIT = 9;
+  const cbs = Array.from(document.querySelectorAll('.item-cb'));
+  const countEl = document.getElementById('count-label');
+  const totalEl = document.getElementById('total-label');
+  const paypalBtn = document.getElementById('paypal-btn');
+  const signalBtn = document.getElementById('signal-btn');
+  const signalBox = document.getElementById('signal-box');
 
-      for (const item of allRows) {
-        const match =
-          !q ||
-          item.category.toLowerCase().includes(q) ||
-          item.bot_name.toLowerCase().includes(q) ||
-          item.url.toLowerCase().includes(q);
-        if (!match) continue;
+  const update = () => {
+    const selected = cbs.filter(cb => cb.checked);
+    const count = selected.length;
+    const total = count > 0 ? count * UNIT : UNIT;
+    countEl.textContent = count === 1 ? '1 item selected' : `${count} items selected`;
+    totalEl.textContent = count > 0 ? `$${total}` : '$9 (1 item min)';
+    paypalBtn.href = `https://www.paypal.com/paypalme/crh2509/${total}`;
+    paypalBtn.textContent = count > 0
+      ? `Pay $${total} via PayPal`
+      : 'Pay $9 via PayPal';
+  };
 
-        if (!grouped.has(item.category)) grouped.set(item.category, []);
-        grouped.get(item.category).push(item);
-      }
-
-      const container = document.getElementById("directory");
-      container.innerHTML = "";
-
-      if (grouped.size === 0) {
-        container.innerHTML = '<p class="status">No matching Telegram links found.</p>';
-        return;
-      }
-
-      for (const [category, items] of grouped.entries()) {
-        const heading = document.createElement("h2");
-        heading.textContent = category;
-        container.appendChild(heading);
-
-        const list = document.createElement("ul");
-        for (const item of items) {
-          const li = document.createElement("li");
-          const label = document.createElement("strong");
-          label.textContent = item.bot_name + ": ";
-
-          const link = document.createElement("a");
-          link.href = item.url;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = item.url;
-
-          li.appendChild(label);
-          li.appendChild(link);
-          list.appendChild(li);
-        }
-        container.appendChild(list);
-      }
-    }
-
-    async function loadDirectory() {
-      const status = document.getElementById("status");
-      try {
-        const cacheBustUrl = `${CSV_URL}${CSV_URL.includes("?") ? "&" : "?"}t=${Date.now()}`;
-        const res = await fetch(cacheBustUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const csvText = await res.text();
-        const parsed = parseCSV(csvText);
-
-        const headers = (parsed[0] || []).map((h) => h.toLowerCase());
-        const catIdx = headers.indexOf("category");
-        const nameIdx = headers.indexOf("bot_name");
-        const urlIdx = headers.indexOf("url");
-
-        allRows = parsed
-          .slice(1)
-          .map((cols) => ({
-            category: cols[catIdx >= 0 ? catIdx : 0] || "Uncategorized",
-            bot_name: cols[nameIdx >= 0 ? nameIdx : 1] || "Bot",
-            url: cols[urlIdx >= 0 ? urlIdx : 2] || ""
-          }))
-          .filter((item) => item.url.startsWith("http"));
-
-        status.textContent = `Showing ${allRows.length} Telegram links (auto-synced from Google Sheets).`;
-        render();
-      } catch (err) {
-        status.textContent = `Could not load sheet CSV (${err.message}). Make sure the sheet is published to web as CSV.`;
-      }
-    }
-
-    document.getElementById("search").addEventListener("input", (e) => {
-      render(e.target.value);
-    });
-
-    loadDirectory();
-  </script>
+  cbs.forEach(cb => cb.addEventListener('change', update));
+  signalBtn.addEventListener('click', () => {
+    signalBox.classList.toggle('open');
+  });
+  update();
+})();
+</script>
 </body>
 </html>
