@@ -1,21 +1,46 @@
+<!-- https://ram133.github.io/getpay/ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Links</title>
+  <title>Telegram Bots Directory</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 24px;
-      font-family: system-ui, -apple-system, sans-serif;
       background: #111315;
       color: #f2f4f7;
     }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin-bottom: 12px;
+    }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 24px;
+      border-radius: 6px;
+      border: 1px solid #343a40;
+      background: #1b1f23;
+      color: #f2f4f7;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    h2 {
+      border-bottom: 1px solid #2b3036;
+      padding-bottom: 6px;
+      margin-top: 28px;
+      font-size: 19px;
+    }
     ul {
       list-style: none;
-      margin: 0;
       padding: 0;
+      margin: 12px 0;
     }
     li {
       margin: 8px 0;
@@ -28,72 +53,23 @@
     a:hover {
       text-decoration: underline;
     }
+    .status {
+      color: #9aa4b2;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <ul id="links"></ul>
+  <div class="container">
+    <h1>Telegram Bots Directory</h1>
+    <input id="search" type="search" placeholder="Filter by bot name or category..." />
+    <div id="status" class="status">Loading links...</div>
+    <div id="directory"></div>
+  </div>
 
   <script>
-    const SHEET_ID = "1yJBr9fHUoAB8HAxrRzniYLL2_A4dCOXvJQbc8YBdfuA";
-    const GID = "1767456501";
-    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
-    const FALLBACK_LINKS = [
-      "https://t.me/gocrazyai_bot?start=_tgr_OhYPGJc5ZDAx",
-      "https://t.me/ko2ai_bot?start=_tgr_qsZHD-9lMWZh",
-      "https://t.me/dreamybyai_vip_bot?start=_tgr_Pn32P241MTIx",
-      "https://t.me/EditopayBot?start=_tgr_sfdql9E4ZTgx",
-      "https://t.me/gocrazyai_bot?start=_tgr_ZzjjxoFhMzAx",
-      "https://t.me/DLPaymentBot?start=_tgr__0aytN84NzQx",
-      "https://t.me/expected_valuebot?start=_tgr_ghJHFUYxZjA5",
-      "https://t.me/Amlcryptocheckbot?start=_tgr_4eJOas4wZmIx",
-      "https://t.me/talepaybot?start=_tgr_3MjRUIFlMjAx",
-      "https://t.me/expected_valuebot?start=_tgr_to7p1zNjZmJh",
-      "https://t.me/spin_memebot?start=_tgr__DNmIQ9hMTIx",
-      "https://t.me/shortpeaks_bot?start=_tgr_Xn_FyOpiM2Yx",
-      "https://t.me/RuneOnlineBot?start=_tgr_iiRokXE2NTEx",
-      "https://t.me/randomgames?start=_tgr_AhgQfB0zM2Ex",
-      "https://t.me/virus_play_bot?start=_tgr_x75cCXBiNTBh",
-      "https://t.me/Hamster_Game_Dev_bot?start=_tgr_enH5Q9ViNDkx",
-      "https://t.me/GiftsBattle_bot?start=_tgr_iM7VWgZkYjkx",
-      "https://t.me/any_drama_bot?start=_tgr_unGswF85NDNh",
-      "https://t.me/world_of_beasts_bot?start=_tgr_T3E0RkZhYjlh",
-      "https://t.me/Video_social_bot?start=_tgr_sg3bzcg5NjY5",
-      "https://t.me/xasaorf_bot?start=_tgr_wg7vjeRmMTcx",
-      "https://t.me/razveymorok_bot?start=_tgr_IhlDqSw2ZTBh",
-      "https://t.me/VPN_bez_lagov_bot?start=_tgr_UqAAqzQ0NGYx",
-      "https://t.me/benditacerezabot?start=_tgr_cv1NWoRhMzg5",
-      "https://t.me/UpGiwGrambot?start=_tgr_KL16g34wYTFh",
-      "https://t.me/BrothersAndRing_bot?start=_tgr_Zo-8CnRiYTAx",
-      "https://t.me/rubup?start=_tgr_4z5zFLs1MWEx",
-      "https://t.me/true_prison_bot?start=_tgr_Z-0lQRg5ZTcx",
-      "https://t.me/luciddreams_bot?start=_tgr_G6UQ2Ts4YTYx",
-      "https://t.me/GiftGoBot?start=_tgr_ODNDxQgzYjgx",
-      "https://t.me/chase_gay?start=_tgr_ox-MP1Q2ZGQ5",
-      "https://t.me/shot_band_app?start=_tgr_R6GDAZo5N2Y5",
-      "https://t.me/emberwing_emb_bot?start=_tgr_3Y8IP4s1OThh",
-      "https://t.me/rolls_game?start=_tgr_iFCZKYdlYzFh",
-      "https://t.me/EasyGiftDropbot?start=_tgr_eS32wg1mMDcx",
-      "https://t.me/ZnakomstvaAnonimniyChatBot?start=_tgr_Im8eZOYzZWEx",
-      "https://t.me/GiftBoostapp_bot?start=_tgr_6xnaLv41OTIx",
-      "https://t.me/GiftSpinnerBot?start=_tgr_YJeW57wzYTEx",
-      "https://t.me/giftstarsin?start=_tgr_XNpBXVBhN2U5",
-      "https://t.me/gifting?start=_tgr_uEalNQU2NmU5",
-      "https://t.me/RocketxAppBot?start=_tgr_GBCOgJc0MTdh",
-      "https://t.me/mira?start=_tgr_3_xuwFgwN2Vh",
-      "https://t.me/dropezone_bot?start=_tgr_ziNSMzY5MTRh",
-      "https://t.me/anychars18_bot?start=_tgr_mcR2aaYzZDIx",
-      "https://t.me/Giftstar2026_bot?start=_tgr_WMEsmg0yYWQx",
-      "https://t.me/GGYHomebot?start=_tgr_xCm1z2Q1YWUx",
-      "https://t.me/MyGymGuid_Bot?start=_tgr_PZkHBEc4OGFh",
-      "https://t.me/ivoryqyn7bot?start=_tgr_AYLQrc5kZTYx",
-      "https://t.me/Elhoottiva_bot?start=_tgr_lXpg0_Y5MTAx",
-      "https://t.me/RobotHappy_bot?start=_tgr_aJ0cbO03MGJh",
-      "https://t.me/marjesave_app_bot?start=_tgr_jj_CiGc5YzZh",
-      "https://t.me/Shahhh_nazzz_bot?start=_tgr_JQXU9mBhZTYx",
-      "https://t.me/AnaMien_bot?start=_tgr_avn3iFUyOWFh",
-      "https://t.me/tetrins6790_bot?start=_tgr_fz6Tv-Q1N2Ux",
-      "https://t.me/oshpoint_bot?start=_tgr_M1bLlNU1N2Mx"
-    ];
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/1yJBr9fHUoAB8HAxrRzniYLL2_A4dCOXvJQbc8YBdfuA/export?format=csv&gid=1767456501";
+    let allRows = [];
 
     function parseCSV(text) {
       const rows = [];
@@ -137,48 +113,24 @@
       return rows;
     }
 
-    function renderLinks(urls) {
-      const list = document.getElementById("links");
-      list.innerHTML = "";
-      for (const cell of urls) {
-        if (/^https?:\/\//i.test(cell)) {
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          a.href = cell;
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          a.textContent = cell;
-          li.appendChild(a);
-          list.appendChild(li);
-        }
+    function render(filterText = "") {
+      const q = filterText.trim().toLowerCase();
+      const grouped = new Map();
+
+      for (const item of allRows) {
+        const match =
+          !q ||
+          item.category.toLowerCase().includes(q) ||
+          item.bot_name.toLowerCase().includes(q) ||
+          item.url.toLowerCase().includes(q);
+        if (!match) continue;
+
+        if (!grouped.has(item.category)) grouped.set(item.category, []);
+        grouped.get(item.category).push(item);
       }
-    }
 
-    async function loadLinks() {
-      try {
-        const url = `${CSV_URL}&t=${Date.now()}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const container = document.getElementById("directory");
+      container.innerHTML = "";
 
-        const csvText = await res.text();
-        const parsed = parseCSV(csvText);
-        const urls = [];
-
-        for (const row of parsed) {
-          for (const cell of row) {
-            if (/^https?:\/\//i.test(cell)) {
-              urls.push(cell);
-            }
-          }
-        }
-
-        renderLinks(urls.length > 0 ? urls : FALLBACK_LINKS);
-      } catch (err) {
-        renderLinks(FALLBACK_LINKS);
-      }
-    }
-
-    loadLinks();
-  </script>
-</body>
-</html>
+      if (grouped.size === 0) {
+        container.innerHTML = '<p
