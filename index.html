@@ -77,6 +77,10 @@
       color: #9aa4b2;
       font-size: 14px;
       margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    .error {
+      color: #ff7b72;
     }
   </style>
 </head>
@@ -90,7 +94,11 @@
   </div>
 
   <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/1yJBr9fHUoAB8HAxrRzniYLL2_A4dCOXvJQbc8YBdfuA/export?format=csv&gid=1767456501";
+    const SHEET_ID = "1yJBr9fHUoAB8HAxrRzniYLL2_A4dCOXvJQbc8YBdfuA";
+    const GID = "1767456501";
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+    const SHEET_VIEW_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=${GID}`;
+
     let allRows = [];
     let selectedCategory = "";
 
@@ -134,6 +142,42 @@
         if (row.some((cell) => cell.length > 0)) rows.push(row);
       }
       return rows;
+    }
+
+    function loadViaJsonp() {
+      return new Promise((resolve, reject) => {
+        const cbName = "gvizCb_" + Date.now();
+        const script = document.createElement("script");
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error("Sheet timed out (check Share: Anyone with the link can view)"));
+        }, 10000);
+
+        function cleanup() {
+          clearTimeout(timer);
+          delete window[cbName];
+          script.remove();
+        }
+
+        window[cbName] = (data) => {
+          cleanup();
+          if (!data || !data.table || !Array.isArray(data.table.rows)) {
+            reject(new Error("Invalid sheet response"));
+            return;
+          }
+          const rows = data.table.rows.map((r) =>
+            (r.c || []).map((cell) => (cell && cell.v != null ? String(cell.v).trim() : ""))
+          );
+          resolve(rows);
+        };
+
+        script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&tqx=responseHandler:${cbName}`;
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("Failed to load sheet script (sheet may be private)"));
+        };
+        document.body.appendChild(script);
+      });
     }
 
     function renderCategories() {
@@ -217,27 +261,42 @@
       }
     }
 
+    function setEntriesFromRows(rows, hasHeader = true) {
+      const dataRows = hasHeader ? rows.slice(1) : rows;
+      allRows = dataRows
+        .map((cols) => ({
+          category: cols[0] || "Uncategorized",
+          bot_name: cols[1] || "",
+          url: cols[2] || ""
+        }))
+        .filter((item) => /^https?:\/\//i.test(item.url));
+
+      const statusEl = document.getElementById("status");
+      statusEl.className = "status";
+      statusEl.textContent = `Loaded ${allRows.length} entries.`;
+      render();
+    }
+
     async function init() {
       const statusEl = document.getElementById("status");
       try {
-        const res = await fetch(CSV_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const csvText = await res.text();
-        const rows = parseCSV(csvText);
-        const dataRows = rows.slice(1);
-
-        allRows = dataRows
-          .map((cols) => ({
-            category: cols[0] || "Uncategorized",
-            bot_name: cols[1] || "",
-            url: cols[2] || ""
-          }))
-          .filter((item) => item.url);
-
-        statusEl.textContent = `Loaded ${allRows.length} entries.`;
-        render();
-      } catch (err) {
-        statusEl.textContent = `Failed to load sheet: ${err.message}`;
+        const res = await fetch(CSV_URL, { cache: "no-store" });
+        const text = await res.text();
+        if (!res.ok || /^\s*<!DOCTYPE html/i.test(text) || /^\s*<html/i.test(text)) {
+          throw new Error(`CSV fetch returned HTML or HTTP ${res.status}`);
+        }
+        setEntriesFromRows(parseCSV(text), true);
+      } catch (csvErr) {
+        try {
+          const jsonpRows = await loadViaJsonp();
+          setEntriesFromRows(jsonpRows, false);
+        } catch (jsonpErr) {
+          statusEl.className = "status error";
+          statusEl.innerHTML =
+            `Could not load sheet: ${jsonpErr.message}. ` +
+            `Make sure the Google Sheet is shared as <strong>Anyone with the link (Viewer)</strong>, or ` +
+            `<a href="${SHEET_VIEW_URL}" target="_blank" rel="noopener noreferrer">open the sheet</a> to verify access.`;
+        }
       }
     }
 
